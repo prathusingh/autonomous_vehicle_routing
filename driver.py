@@ -1,4 +1,5 @@
-from perceptive_automata.request_handler import RequestHandler
+from request_handler import RequestHandler
+
 
 class Driver:
     def __init__(self):
@@ -24,29 +25,19 @@ class Driver:
 
         # while(path queue is not empty) {
 
-            self.log_status()
+        self.log_status()
 
-            # move the vehicle in the direction of position (which is popped from path queue)
+        # move the vehicle in the direction of position (which is popped from path queue)
 
-            # advance time
+        # advance time
 
-            # check new ride
-            # if ride:
-              # fetch path queue again
+        # check new ride
+        # if ride:
+        # fetch path queue again
 
-
-
-
-
-        #}
-
-
-
+        # }
 
 
 driver = Driver()
 
 print(driver.req_handler.rider_pos_mapping)
-
-
-
