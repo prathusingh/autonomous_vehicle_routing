@@ -1,4 +1,6 @@
 from request_handler import RequestHandler
+from route_optimizer import RouteOptimizer
+from rider import Rider
 
 
 class Driver:
@@ -8,19 +10,18 @@ class Driver:
         self.current_pos = self.grid_start_pos.copy()
         self.current_time = 0
         self.req_handler = RequestHandler()
+        self.load_riders()
         self.drive()
 
-    def is_new_ride_at_current_time_step(self):
-        pass
-
-    def log_status(self):
-        # log current pos
-        # log if pickup is there
-        # log if dropoff is there
-        # log vehicle passenger names
-        pass
+    def load_riders(self):
+        self.riders = list()
+        for req in self.req_handler.request_dict[self.current_time]:
+            self.riders.append(Rider(req['start'], req['end'], req['name']))
 
     def drive(self):
+        self.route_optimizer = RouteOptimizer()
+        self.route_optimizer.get_path(self.current_pos, self.riders)
+
         # fetch the path queue based on rides
 
         # while(path queue is not empty) {
@@ -33,9 +34,20 @@ class Driver:
 
         # check new ride
         # if ride:
+        # load riders
         # fetch path queue again
 
         # }
+
+    def is_new_ride_at_current_time_step(self):
+        pass
+
+    def log_status(self):
+        # log current pos
+        # log if pickup is there
+        # log if dropoff is there
+        # log vehicle passenger names
+        pass
 
 
 driver = Driver()

@@ -49,52 +49,69 @@ class RequestHandler:
 
     def update_request_dict(self):
         # assume we have request lists as defined at the top
-        self.request_dict[int("requests_time_0".split("_")[2])] = requests_time_0
-        self.request_dict[int("requests_time_1".split("_")[2])] = requests_time_1
-        self.request_dict[int("requests_time_2".split("_")[2])] = requests_time_2
+        self.request_dict[int("requests_time_0".split("_")[
+                              2])] = requests_time_0.copy()
+        """ self.request_dict[int("requests_time_1".split("_")[
+                              2])] = requests_time_1 """
+        # self.request_dict[int("requests_time_2".split("_")[
+        #                       2])] = requests_time_2
 
     def update_rider_pos_mapping(self):
         for ride in requests_time_0:
-
             if tuple(ride["start"]) in self.rider_pos_mapping:
                 # Here P stands for pickup
-                self.rider_pos_mapping[tuple(ride["start"])].append([ride["name"], "P"])
+                self.rider_pos_mapping[tuple(ride["start"])].append([
+                    ride["name"], "P"])
             else:
-                self.rider_pos_mapping[tuple(ride["start"])] = [[ride["name"], "P"]]
+                self.rider_pos_mapping[tuple(ride["start"])] = [
+                    [ride["name"], "P"]]
 
             if tuple(ride["end"]) in self.rider_pos_mapping:
                 # Here D stands for drop off
-                self.rider_pos_mapping[tuple(ride["end"])].append([ride["name"], "D"])
+                self.rider_pos_mapping[tuple(ride["end"])].append([
+                    ride["name"], "D"])
 
             else:
-                self.rider_pos_mapping[tuple(ride["end"])] = [[ride["name"], "D"]]
+                self.rider_pos_mapping[tuple(ride["end"])] = [
+                    [ride["name"], "D"]]
 
+        """
+        
         for ride in requests_time_1:
-
             if tuple(ride["start"]) in self.rider_pos_mapping:
                 # Here P stands for pickup
-                self.rider_pos_mapping[tuple(ride["start"])].append([ride["name"], "P"])
+                self.rider_pos_mapping[tuple(ride["start"])].append([
+                    ride["name"], "P"])
             else:
-                self.rider_pos_mapping[tuple(ride["start"])] = [[ride["name"], "P"]]
+                self.rider_pos_mapping[tuple(ride["start"])] = [
+                    [ride["name"], "P"]]
 
             if tuple(ride["end"]) in self.rider_pos_mapping:
                 # Here D stands for drop off
-                self.rider_pos_mapping[tuple(ride["end"])].append([ride["name"], "D"])
+                self.rider_pos_mapping[tuple(ride["end"])].append([
+                    ride["name"], "D"])
 
             else:
-                self.rider_pos_mapping[tuple(ride["end"])] = [[ride["name"], "D"]]
+                self.rider_pos_mapping[tuple(ride["end"])] = [
+                    [ride["name"], "D"]]
 
         for ride in requests_time_2:
 
             if tuple(ride["start"]) in self.rider_pos_mapping:
                 # Here P stands for pickup
-                self.rider_pos_mapping[tuple(ride["start"])].append([ride["name"], "P"])
+                self.rider_pos_mapping[tuple(ride["start"])].append([
+                    ride["name"], "P"])
             else:
-                self.rider_pos_mapping[tuple(ride["start"])] = [[ride["name"], "P"]]
+                self.rider_pos_mapping[tuple(ride["start"])] = [
+                    [ride["name"], "P"]]
 
             if tuple(ride["end"]) in self.rider_pos_mapping:
                 # Here D stands for drop off
-                self.rider_pos_mapping[tuple(ride["end"])].append([ride["name"], "D"])
+                self.rider_pos_mapping[tuple(ride["end"])].append([
+                    ride["name"], "D"])
 
             else:
-                self.rider_pos_mapping[tuple(ride["end"])] = [[ride["name"], "D"]]
+                self.rider_pos_mapping[tuple(ride["end"])] = [
+                    [ride["name"], "D"]]
+
+            """
