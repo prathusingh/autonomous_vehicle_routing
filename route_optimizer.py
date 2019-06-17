@@ -26,36 +26,48 @@ class RouteOptimizer:
 
     @staticmethod
     def calculate_optimized_path(rider_list, curr_pos):
+        min_time_to_complete_rides = sys.maxsize
+        optimized_path = list()
+
         pickup_combinations = list()
         calculate_pickup_combinations(
             rider_list, list(), pickup_combinations)
 
-        for ride_order in pickup_combinations:
-            current_time = 0
+        for pickup_order in pickup_combinations:
+            time_to_complete_rides = 0
             current_pos = curr_pos.copy()
-            for ride in ride_order:
-                current_time += calculate_ride_time(current_pos, ride.start)
+            for ride in pickup_order:
+                time_to_complete_rides += calculate_ride_time(
+                    current_pos, ride.start)
                 current_pos = ride.start.copy()
             dropoff_permutations = list()
             calculate_permutations(
-                ride_order, permutations=dropoff_permutations)
-            dropoff_time = sys.maxsize
+                pickup_order, permutations=dropoff_permutations)
+
+            max_dropoff_time = sys.maxsize
+            next_pos = current_pos.copy()
+
             for dropoff_order in dropoff_permutations:
-                current_dropoff_time = 0
+                total_dropoff_time = 0
                 current_start_pos = current_pos.copy()
                 for next_dropoff in dropoff_order:
-                    dropoff_time += calculate_ride_time(
+                    total_dropoff_time += calculate_ride_time(
                         current_start_pos, next_dropoff.end)
-                    current_start_pos = ride.end.copy()
-                if current_dropoff_time < dropoff_time:
-                    dropoff_time = current_dropoff_time
+                    current_start_pos = next_dropoff.end.copy()
+                if total_dropoff_time < max_dropoff_time:
+                    max_dropoff_time = total_dropoff_time
+                    next_pos = current_start_pos.copy()
 
-            current_time += dropoff_time
+            time_to_complete_rides += max_dropoff_time
 
-            for index in range(len(ride_order), len(rider_list)):
-                calculate_ride_time()
-                current_time += rider_list[index].start
-                current_time += rider_list[index].end
+            for index in range(len(pickup_order), len(rider_list)):
+                time_to_complete_rides += calculate_ride_time(
+                    next_pos, rider_list[index].start)
+                time_to_complete_rides += calculate_ride_time(
+                    rider_list[index].start, rider_list[index].end)
+
+            if min_time_to_complete_rides < time_to_complete_rides:
+                min_time_to_complete_rides = time_to_complete_rides
 
     def get_path(self, curr_pos, rider_list):
         calculate_optimized_path(rider_list, curr_pos)
