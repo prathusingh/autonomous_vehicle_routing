@@ -2,7 +2,6 @@ import sys
 
 
 class RouteOptimizer:
-    minimum_time = sys.maxsize
 
     @staticmethod
     def calculate_pickup_combinations(rides, current_pickup_order, pickup_combinations, start=0):
@@ -34,6 +33,8 @@ class RouteOptimizer:
             rider_list, list(), pickup_combinations)
 
         for pickup_order in pickup_combinations:
+            path = list()
+            path.extend(pickup_order)
             time_to_complete_rides = 0
             current_pos = curr_pos.copy()
             for ride in pickup_order:
@@ -46,9 +47,12 @@ class RouteOptimizer:
 
             max_dropoff_time = sys.maxsize
             next_pos = current_pos.copy()
+            optimized_dropoff_path = list()
 
             for dropoff_order in dropoff_permutations:
                 total_dropoff_time = 0
+                dropoff_path = list()
+                dropoff_path.extend(dropoff_order)
                 current_start_pos = current_pos.copy()
                 for next_dropoff in dropoff_order:
                     total_dropoff_time += calculate_ride_time(
@@ -57,20 +61,27 @@ class RouteOptimizer:
                 if total_dropoff_time < max_dropoff_time:
                     max_dropoff_time = total_dropoff_time
                     next_pos = current_start_pos.copy()
+                    optimized_dropoff_path = dropoff_path.copy()
 
             time_to_complete_rides += max_dropoff_time
+            path.extend(optimized_dropoff_path)
 
             for index in range(len(pickup_order), len(rider_list)):
                 time_to_complete_rides += calculate_ride_time(
                     next_pos, rider_list[index].start)
+                path.append(rider_list[index].start)
                 time_to_complete_rides += calculate_ride_time(
                     rider_list[index].start, rider_list[index].end)
+                path.append(rider_list[index].end)
 
             if min_time_to_complete_rides < time_to_complete_rides:
                 min_time_to_complete_rides = time_to_complete_rides
+                optimized_path = path.copy()
+
+        return optimized_path
 
     def get_path(self, curr_pos, rider_list):
-        calculate_optimized_path(rider_list, curr_pos)
+        return calculate_optimized_path(rider_list, curr_pos)
 
     @staticmethod
     # memoize already calculte ride time between two coordinates in 2D plane
