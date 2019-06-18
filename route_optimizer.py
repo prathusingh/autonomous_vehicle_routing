@@ -1,8 +1,10 @@
 import sys
+from distancebetweentwocoordinates import DistanceBetweenTwoCoordinates
 
 
 class RouteOptimizer:
-    time_map_between_two_pos = dict()
+    def __init__(self):
+        self.distance_map_between_two_coordinates = dict()
 
     @staticmethod
     def calculate_pickup_combinations(rides, current_pickup_order, pickup_combinations, start=0):
@@ -24,6 +26,12 @@ class RouteOptimizer:
             start += 1
             calculate_permutations(list_to_permute, permutations, start)
 
+    def get_distance_between_two_coordinates(self, start_coordinate, end_coordinate, grid_start_coordinate, grid_end_coordinate):
+        hashed_key = DistanceBetweenTwoCoordinates(
+            tuple(start_coordinate), tuple(end_coordinate))
+        return self.distance_map_between_two_coordinates[hashed_key] if hashed_key in self.distance_map_between_two_coordinates else calculate_ride_time(
+            start_coordinate, end_coordinate, grid_start_coordinate, grid_end_coordinate)
+
     def get_optimized_path(self, curr_pos, rider_list, grid_start_pos, grid_end_pos):
         min_time_to_complete_rides = sys.maxsize
         optimized_path = list()
@@ -38,7 +46,7 @@ class RouteOptimizer:
             time_to_complete_rides = 0
             current_pos = curr_pos.copy()
             for ride in pickup_order:
-                time_to_complete_rides += calculate_ride_time(
+                time_to_complete_rides += self.get_distance_between_two_coordinates(
                     current_pos, ride.start, grid_start_pos, grid_end_pos)
                 current_pos = ride.start.copy()
             dropoff_permutations = list()
@@ -55,7 +63,7 @@ class RouteOptimizer:
                 dropoff_path.extend(dropoff_order)
                 current_start_pos = current_pos.copy()
                 for next_dropoff in dropoff_order:
-                    total_dropoff_time += calculate_ride_time(
+                    total_dropoff_time += self.get_distance_between_two_coordinates(
                         current_start_pos, next_dropoff.end, grid_start_pos, grid_end_pos)
                     current_start_pos = next_dropoff.end.copy()
                 if total_dropoff_time < max_dropoff_time:
@@ -67,10 +75,10 @@ class RouteOptimizer:
             path.extend(optimized_dropoff_path)
 
             for index in range(len(pickup_order), len(rider_list)):
-                time_to_complete_rides += calculate_ride_time(
+                time_to_complete_rides += self.get_distance_between_two_coordinates(
                     next_pos, rider_list[index].start, grid_start_pos, grid_end_pos)
                 path.append(rider_list[index].start)
-                time_to_complete_rides += calculate_ride_time(
+                time_to_complete_rides += self.get_distance_between_two_coordinates(
                     rider_list[index].start, rider_list[index].end, grid_start_pos, grid_end_pos)
                 path.append(rider_list[index].end)
 
