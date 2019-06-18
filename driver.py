@@ -20,7 +20,8 @@ class Driver:
 
     def drive(self):
         self.route_optimizer = RouteOptimizer()
-        self.route_optimizer.get_path(self.current_pos, self.riders)
+        self.route_optimizer.get_optimized_path(
+            self.current_pos, self.riders, self.grid_start_pos, self.grid_end_pos)
 
         # fetch the path queue based on rides
 

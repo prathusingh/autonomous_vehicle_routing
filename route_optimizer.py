@@ -2,6 +2,7 @@ import sys
 
 
 class RouteOptimizer:
+    time_map_between_two_pos = dict()
 
     @staticmethod
     def calculate_pickup_combinations(rides, current_pickup_order, pickup_combinations, start=0):
@@ -23,8 +24,7 @@ class RouteOptimizer:
             start += 1
             calculate_permutations(list_to_permute, permutations, start)
 
-    @staticmethod
-    def calculate_optimized_path(rider_list, curr_pos):
+    def get_optimized_path(self, curr_pos, rider_list, grid_start_pos, grid_end_pos):
         min_time_to_complete_rides = sys.maxsize
         optimized_path = list()
 
@@ -39,7 +39,7 @@ class RouteOptimizer:
             current_pos = curr_pos.copy()
             for ride in pickup_order:
                 time_to_complete_rides += calculate_ride_time(
-                    current_pos, ride.start)
+                    current_pos, ride.start, grid_start_pos, grid_end_pos)
                 current_pos = ride.start.copy()
             dropoff_permutations = list()
             calculate_permutations(
@@ -56,7 +56,7 @@ class RouteOptimizer:
                 current_start_pos = current_pos.copy()
                 for next_dropoff in dropoff_order:
                     total_dropoff_time += calculate_ride_time(
-                        current_start_pos, next_dropoff.end)
+                        current_start_pos, next_dropoff.end, grid_start_pos, grid_end_pos)
                     current_start_pos = next_dropoff.end.copy()
                 if total_dropoff_time < max_dropoff_time:
                     max_dropoff_time = total_dropoff_time
@@ -68,10 +68,10 @@ class RouteOptimizer:
 
             for index in range(len(pickup_order), len(rider_list)):
                 time_to_complete_rides += calculate_ride_time(
-                    next_pos, rider_list[index].start)
+                    next_pos, rider_list[index].start, grid_start_pos, grid_end_pos)
                 path.append(rider_list[index].start)
                 time_to_complete_rides += calculate_ride_time(
-                    rider_list[index].start, rider_list[index].end)
+                    rider_list[index].start, rider_list[index].end, grid_start_pos, grid_end_pos)
                 path.append(rider_list[index].end)
 
             if min_time_to_complete_rides < time_to_complete_rides:
@@ -80,11 +80,14 @@ class RouteOptimizer:
 
         return optimized_path
 
-    def get_path(self, curr_pos, rider_list):
-        return calculate_optimized_path(rider_list, curr_pos)
-
     @staticmethod
     # memoize already calculte ride time between two coordinates in 2D plane
-    def calculate_ride_time(start_coordinate, end_coordinate):
-        # TODO
-        pass
+    def calculate_ride_time(current_coordinate, end_coordinate, grid_start_coordinate, grid_end_coordinate):
+        calculate_ride_time(
+            current_coordinate.start[0] + 1, end_coordinate, grid_start_coordinate, grid_end_coordinate)
+        calculate_ride_time(
+            current_coordinate.start[1] + 1, end_coordinate, grid_start_coordinate, grid_end_coordinate)
+        calculate_ride_time(
+            current_coordinate.start[0] - 1, end_coordinate, grid_start_coordinate, grid_end_coordinate)
+        calculate_ride_time(
+            current_coordinate.start[1] - 1, end_coordinate, grid_start_coordinate, grid_end_coordinate)
