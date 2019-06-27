@@ -91,7 +91,7 @@ class RouteOptimizer:
     @staticmethod
     # memoize already calculte ride time between two coordinates in 2D plane
     def calculate_ride_time(current_coordinate, end_coordinate, grid_start_coordinate, grid_end_coordinate):
-        # Work in Progress
+        # TODO: return if it reaches the grid boundary or the grid_end_coordinate
         calculate_ride_time(
             current_coordinate.start[0] + 1, end_coordinate, grid_start_coordinate, grid_end_coordinate)
         calculate_ride_time(
